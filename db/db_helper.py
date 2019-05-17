@@ -1,7 +1,8 @@
 from db.connection import DBConnection
 
 
-class DBHelper(DBConnection):
+class CafeDB(DBConnection):
+
     def all_salesmans(self):
         return self.select_as_list("SELECT name FROM salesman")
 

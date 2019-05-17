@@ -1,16 +1,20 @@
-from db.db_helper import DBHelper
-from reporting import create_table
-import constants as const
-from definitions import project_path_dir
 from pathlib import Path
 
+import constants as const
+from definitions import project_path_dir
+from reporting import create_table
+from roles import Salesman, Manager
 
-class PositionsHelper:
-    def __init__(self):
-        self.db_helper = DBHelper("db_coffee_for_me.db")
 
-    def get_all_salesmans(self):
-        return self.db_helper.all_salesmans()
+class PricingService:
+    def __init__(self, cafe_db):
+        self.cafe_db = cafe_db
+
+    def show_price(self, sale_ifo_dict, role):
+        if isinstance(role, Salesman):
+            self.cafe_db.create_and_print_bill(sale_ifo_dict)
+        elif isinstance(role, Manager):
+            raise NotImplementedError
 
     def create_and_print_bill(self, sale_info_dict):
         columns, rows = [], []
@@ -51,7 +55,7 @@ class PositionsHelper:
         return total_value_for_coffee, quantity, currency_type  # think about summ of diff currency
 
     def get_el_from_summary_table_by_username(self, column_name, name):
-        res = self.db_helper.get_element_from_total_table_for_salesman(
+        res = self.cafe_db.get_element_from_total_table_for_salesman(
             column_name, name)
         return 0 if not res else res
 
@@ -61,11 +65,10 @@ class PositionsHelper:
         if column_name == "total":
             new_total_value = self.get_el_from_summary_table_by_username(
                 column_name, name) + curr_total
-            self.db_helper.update_data_in_summary_table(column_name, name,
-                                                        new_total_value)
+            self.cafe_db.update_data_in_summary_table(column_name, name,
+                                                      new_total_value)
         elif column_name == "number_of_sales":
             new_number_of_sales_value = self.get_el_from_summary_table_by_username(
                 column_name, name) + quantity
-            self.db_helper.update_data_in_summary_table(column_name, name,
-                                                        new_number_of_sales_value)
-
+            self.cafe_db.update_data_in_summary_table(column_name, name,
+                                                      new_number_of_sales_value)

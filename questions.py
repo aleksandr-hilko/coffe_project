@@ -17,9 +17,12 @@ class NumberValidator(Validator):
                 cursor_position=len(document.text))  # Move cursor to end
 
 
-def coffee_questions(coffee_list_from_db, additional_ingridients_from_db):
-    coffee_wit_price_list = list(map(lambda el: {"name": el}, coffee_list_from_db))
-    additional_ingridients_list = list(map(lambda el: {"name": el}, additional_ingridients_from_db))
+def coffee_questions(menu):
+    coffee_with_price_list = menu.get_all_coffee_with_price()
+    additional_ingridients = menu.get_all_additional_ingredients()
+
+    coffee_wit_price_list = list(map(lambda el: {"name": el}, coffee_with_price_list))
+    additional_ingridients_list = list(map(lambda el: {"name": el}, additional_ingridients))
     my_coffee_questions = [
         {
             'type': 'list',
